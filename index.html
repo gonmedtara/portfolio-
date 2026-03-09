@@ -8,7 +8,13 @@
   <meta property="og:title" content="Mohamed Gontara — Senior Frontend Developer">
   <meta property="og:description" content="9+ ans d'expérience. Angular, Vue/Nuxt, React, TypeScript.">
   <meta property="og:type" content="website">
+  <meta name="theme-color" content="#050508">
   <title>Mohamed Gontara | Senior Frontend Developer</title>
+  <link rel="icon" href="icons/favicon.ico" sizes="any">
+  <link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="icons/favicon-96x96.png" type="image/png" sizes="96x96">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" sizes="180x180">
+  <link rel="manifest" href="icons/site.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
@@ -25,19 +31,117 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body { background: var(--dark); color: var(--text); font-family: 'Inter', sans-serif; line-height: 1.6; overflow-x: hidden; }
-    
+
     /* NAV */
     nav { position: fixed; top: 0; width: 100%; z-index: 100; background: rgba(5,5,8,0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
     .nav-logo { font-weight: 700; font-size: 1.1rem; color: var(--accent); font-family: 'JetBrains Mono', monospace; }
     .nav-links { display: flex; gap: 2rem; list-style: none; }
     .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; letter-spacing: 0.05em; text-transform: uppercase; }
     .nav-links a:hover { color: var(--accent); }
-    
-    /* HERO */
-    .hero { min-height: 100vh; display: flex; align-items: center; padding: 0 8%; padding-top: 80px; position: relative; overflow: hidden; }
-    .hero::before { content: ''; position: absolute; top: -50%; right: -20%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(0,212,170,0.08) 0%, transparent 70%); pointer-events: none; }
-    .hero::after { content: ''; position: absolute; bottom: -20%; left: -10%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(124,58,237,0.06) 0%, transparent 70%); pointer-events: none; }
-    .hero-content { max-width: 700px; }
+
+    /* ── HERO ─────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 0 8%;
+      padding-top: 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* WebGL canvas — fills hero section only */
+    #hero-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      display: block;
+    }
+
+    /* Vignette so mesh fades at edges, content stays readable */
+    .hero-vignette {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 75% 65% at 50% 50%, transparent 20%, rgba(5,5,8,0.65) 100%),
+        linear-gradient(to bottom, rgba(5,5,8,0.25) 0%, transparent 18%, transparent 82%, rgba(5,5,8,0.7) 100%);
+    }
+
+    /* ── FLOATING CARDS — desktop only ──────────────────── */
+    .hero-floats {
+      display: none;
+    }
+    @media (min-width: 1100px) {
+      .hero-floats {
+        display: block;
+        position: absolute;
+        right: 3%;
+        top: 0; bottom: 0;
+        width: 320px;
+        pointer-events: none;
+        z-index: 3;
+      }
+    }
+    .hero-float-layer {
+      position: absolute;
+      inset: 0;
+      will-change: transform;
+    }
+    .fcard {
+      position: absolute;
+      background: rgba(18, 18, 26, 0.75);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 14px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.45), 0 0 0 0.5px rgba(255,255,255,0.04) inset;
+      padding: 1rem 1.1rem;
+      width: 210px;
+    }
+    .fcard-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.65rem;
+    }
+    /* Card 1 — Stack (haut, décalée à droite) */
+    .fcard-stack { top: 12%; left: 30px; animation: flt-a 6s ease-in-out infinite; }
+    .fcard-stack .fpills { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+    .fpill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.09);
+      color: rgba(255,255,255,0.55);
+      background: rgba(255,255,255,0.04);
+    }
+    .fpill.g { border-color: rgba(0,212,170,0.35); color: var(--accent); background: rgba(0,212,170,0.07); }
+    .fpill.p { border-color: rgba(124,58,237,0.35); color: #a78bfa; background: rgba(124,58,237,0.07); }
+    /* Card 2 — Mission (milieu, décalée à gauche) */
+    .fcard-mission { top: 42%; left: -20px; animation: flt-b 7.5s ease-in-out infinite; }
+    .fcard-mission .fstatus { display: flex; align-items: center; gap: 0.4rem; font-size: 0.6rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.5rem; }
+    .fstatus-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; flex-shrink: 0; }
+    .fcard-mission .fcompany { font-size: 0.92rem; font-weight: 700; color: var(--text); }
+    .fcard-mission .frole    { font-size: 0.68rem; color: var(--muted); margin-top: 0.1rem; }
+    .fcard-mission .fsince   { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; color: var(--muted); margin-top: 0.5rem; }
+    /* Card 3 — XP (bas, décalée à droite) */
+    .fcard-xp { bottom: 12%; left: 50px; animation: flt-c 8s ease-in-out infinite; text-align: center; width: 180px; }
+    .fcard-xp .fnum  { font-size: 2.2rem; font-weight: 800; color: var(--accent); font-family: 'JetBrains Mono', monospace; line-height: 1; }
+    .fcard-xp .funit { font-size: 0.68rem; color: var(--muted); margin-top: 0.3rem; letter-spacing: 0.08em; }
+    /* Float keyframes */
+    @keyframes flt-a { 0%,100%{transform:translateY(0px) rotate(-1deg)}   50%{transform:translateY(-12px) rotate(0.5deg)} }
+    @keyframes flt-b { 0%,100%{transform:translateY(0px) rotate(1.2deg)}  55%{transform:translateY(-14px) rotate(-0.6deg)} }
+    @keyframes flt-c { 0%,100%{transform:translateY(0px) rotate(-0.5deg)} 45%{transform:translateY(-10px) rotate(1deg)} }
+
+    .hero-content { max-width: 700px; position: relative; z-index: 2; }
     .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(0,212,170,0.1); border: 1px solid rgba(0,212,170,0.2); color: var(--accent); padding: 0.35rem 1rem; border-radius: 50px; font-size: 0.8rem; margin-bottom: 1.5rem; font-family: 'JetBrains Mono', monospace; }
     .hero-badge::before { content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
@@ -56,13 +160,13 @@
     .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
     .btn-linkedin { background: #0a66c2; color: #fff; padding: 0.75rem 1.75rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem; }
     .btn-linkedin:hover { background: #0856a8; transform: translateY(-2px); }
-    
+
     /* SECTIONS */
     section { padding: 6rem 8%; }
     .section-tag { font-family: 'JetBrains Mono', monospace; color: var(--accent); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 0.75rem; }
     .section-title { font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 700; margin-bottom: 1rem; }
     .section-subtitle { color: var(--muted); max-width: 500px; margin-bottom: 3rem; }
-    
+
     /* SKILLS */
     .skills { background: var(--dark2); }
     .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
@@ -72,7 +176,7 @@
     .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
     .tag { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #94a3b8; padding: 0.3rem 0.75rem; border-radius: 6px; font-size: 0.8rem; font-family: 'JetBrains Mono', monospace; }
     .tag.main { background: rgba(0,212,170,0.1); border-color: rgba(0,212,170,0.25); color: var(--accent); }
-    
+
     /* EXPERIENCE */
     .timeline { position: relative; }
     .timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--accent), var(--accent2)); border-radius: 2px; }
@@ -86,7 +190,7 @@
     .timeline-list { list-style: none; }
     .timeline-list li { color: #94a3b8; font-size: 0.9rem; padding: 0.3rem 0; padding-left: 1.2rem; position: relative; }
     .timeline-list li::before { content: '→'; position: absolute; left: 0; color: var(--accent); }
-    
+
     /* CERTS */
     .certs { background: var(--dark2); }
     .certs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
@@ -97,7 +201,7 @@
     .cert-year { font-family: 'JetBrains Mono', monospace; color: var(--accent); font-size: 0.85rem; }
     .cert-link-label { font-size: 0.75rem; color: var(--muted); margin-top: 0.75rem; font-family: 'JetBrains Mono', monospace; }
     .cert-card:hover .cert-link-label { color: var(--accent); }
-    
+
     /* CONTACT */
     .contact-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 3rem; max-width: 600px; }
     .contact-item { display: flex; align-items: center; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--border); }
@@ -107,13 +211,10 @@
     .contact-value { color: var(--text); font-size: 0.95rem; }
     .contact-value a { color: var(--accent); text-decoration: none; }
     .contact-value a:hover { text-decoration: underline; }
-    
+
     /* FOOTER */
     footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; }
-    
-    /* GRID LINES BG */
-    .hero-bg-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none; }
-    
+
     @media (max-width: 768px) {
       nav .nav-links { display: none; }
       .hero-stats { gap: 1.5rem; }
@@ -134,9 +235,38 @@
   </ul>
 </nav>
 
-<!-- HERO -->
 <section class="hero" id="about">
-  <div class="hero-bg-grid"></div>
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-vignette"></div>
+  <div class="hero-floats" id="heroFloats" aria-hidden="true">
+    <div class="hero-float-layer" id="flayer1">
+      <div class="fcard fcard-stack">
+        <div class="fcard-label">Stack</div>
+        <div class="fpills">
+          <span class="fpill g">Angular</span>
+          <span class="fpill g">Vue 3</span>
+          <span class="fpill p">React</span>
+          <span class="fpill">TypeScript</span>
+          <span class="fpill">NestJS</span>
+          <span class="fpill">Docker</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-float-layer" id="flayer2">
+      <div class="fcard fcard-mission">
+        <div class="fstatus"><span class="fstatus-dot"></span>En mission</div>
+        <div class="fcompany">Société Générale</div>
+        <div class="frole">Développeur Sénior Angular</div>
+        <div class="fsince">Depuis avril 2025</div>
+      </div>
+    </div>
+    <div class="hero-float-layer" id="flayer3">
+      <div class="fcard fcard-xp">
+        <div class="fnum">9+</div>
+        <div class="funit">années d'expérience</div>
+      </div>
+    </div>
+  </div>
   <div class="hero-content">
     <div class="hero-badge">Senior Frontend Developer · Île-de-France</div>
     <h1>Mohamed<br><span>Gontara</span></h1>
@@ -154,8 +284,6 @@
     </div>
   </div>
 </section>
-
-<!-- SKILLS -->
 <section class="skills" id="skills">
   <p class="section-tag">// expertise</p>
   <h2 class="section-title">Stack technique</h2>
@@ -163,50 +291,35 @@
   <div class="skills-grid">
     <div class="skill-card">
       <div class="skill-card-title">⚡ Frameworks Front</div>
-      <div class="tags">
-        <span class="tag main">Angular</span><span class="tag main">Vue 3</span><span class="tag main">Nuxt 3</span><span class="tag main">React</span>
-      </div>
+      <div class="tags"><span class="tag main">Angular</span><span class="tag main">Vue 3</span><span class="tag main">Nuxt 3</span><span class="tag main">React</span></div>
     </div>
     <div class="skill-card">
       <div class="skill-card-title">🔤 Langages</div>
-      <div class="tags">
-        <span class="tag main">TypeScript</span><span class="tag main">JavaScript</span><span class="tag">HTML5</span><span class="tag">CSS3 / SASS</span>
-      </div>
+      <div class="tags"><span class="tag main">TypeScript</span><span class="tag main">JavaScript</span><span class="tag">HTML5</span><span class="tag">CSS3 / SASS</span></div>
     </div>
     <div class="skill-card">
       <div class="skill-card-title">📦 State & Libraries</div>
-      <div class="tags">
-        <span class="tag">NGRX</span><span class="tag">Vuex / Pinia</span><span class="tag">Redux</span><span class="tag">RxJS</span>
-      </div>
+      <div class="tags"><span class="tag">NGRX</span><span class="tag">Vuex / Pinia</span><span class="tag">Redux</span><span class="tag">RxJS</span></div>
     </div>
     <div class="skill-card">
       <div class="skill-card-title">🛠️ Back & APIs</div>
-      <div class="tags">
-        <span class="tag">NestJS</span><span class="tag">Express</span><span class="tag">Spring Boot</span><span class="tag">Elasticsearch</span>
-      </div>
+      <div class="tags"><span class="tag">NestJS</span><span class="tag">Express</span><span class="tag">Spring Boot</span><span class="tag">Elasticsearch</span></div>
     </div>
     <div class="skill-card">
       <div class="skill-card-title">🚀 CI/CD & Cloud</div>
-      <div class="tags">
-        <span class="tag">Docker</span><span class="tag">GitHub Actions</span><span class="tag">Azure</span><span class="tag">AWS</span><span class="tag">Jenkins</span>
-      </div>
+      <div class="tags"><span class="tag">Docker</span><span class="tag">GitHub Actions</span><span class="tag">Azure</span><span class="tag">AWS</span><span class="tag">Jenkins</span></div>
     </div>
     <div class="skill-card">
       <div class="skill-card-title">🧪 Tests & Qualité</div>
-      <div class="tags">
-        <span class="tag">Jest</span><span class="tag">Cypress</span><span class="tag">Vitest</span><span class="tag">SonarQube</span>
-      </div>
+      <div class="tags"><span class="tag">Jest</span><span class="tag">Cypress</span><span class="tag">Vitest</span><span class="tag">SonarQube</span></div>
     </div>
   </div>
 </section>
-
-<!-- EXPERIENCE -->
 <section id="experience">
   <p class="section-tag">// parcours</p>
   <h2 class="section-title">Expérience</h2>
   <p class="section-subtitle">Grands comptes en Île-de-France depuis 2017.</p>
   <div class="timeline">
-
     <div class="timeline-item">
       <div class="timeline-dot"></div>
       <div class="timeline-period">Avril 2025 → Aujourd'hui</div>
@@ -223,7 +336,6 @@
         <span class="timeline-tag">Angular 17-20</span><span class="timeline-tag">NestJS</span><span class="timeline-tag">Azure</span><span class="timeline-tag">GitHub Copilot</span><span class="timeline-tag">A11y</span>
       </div>
     </div>
-
     <div class="timeline-item">
       <div class="timeline-dot"></div>
       <div class="timeline-period">Sep 2023 → Mar 2025</div>
@@ -239,7 +351,6 @@
         <span class="timeline-tag">Angular 13-16</span><span class="timeline-tag">NGRX</span><span class="timeline-tag">SASS</span><span class="timeline-tag">Jenkins</span>
       </div>
     </div>
-
     <div class="timeline-item">
       <div class="timeline-dot"></div>
       <div class="timeline-period">Juin 2021 → Sep 2023</div>
@@ -254,7 +365,6 @@
         <span class="timeline-tag">Vue 3</span><span class="timeline-tag">Vuex</span><span class="timeline-tag">Node.js</span><span class="timeline-tag">AWS</span><span class="timeline-tag">Elasticsearch</span>
       </div>
     </div>
-
     <div class="timeline-item">
       <div class="timeline-dot"></div>
       <div class="timeline-period">Fév 2019 → Mai 2021</div>
@@ -269,7 +379,6 @@
         <span class="timeline-tag">Angular</span><span class="timeline-tag">Vue.js</span><span class="timeline-tag">React</span><span class="timeline-tag">ThreeJS</span><span class="timeline-tag">Design System</span>
       </div>
     </div>
-
     <div class="timeline-item">
       <div class="timeline-dot"></div>
       <div class="timeline-period">Juil 2017 → Jan 2019</div>
@@ -284,11 +393,8 @@
         <span class="timeline-tag">Angular</span><span class="timeline-tag">Ionic</span><span class="timeline-tag">React Native</span><span class="timeline-tag">PWA</span>
       </div>
     </div>
-
   </div>
 </section>
-
-<!-- CERTIFICATIONS -->
 <section class="certs" id="certifications">
   <p class="section-tag">// certifications</p>
   <h2 class="section-title">Certifications</h2>
@@ -320,8 +426,6 @@
     </a>
   </div>
 </section>
-
-<!-- CONTACT -->
 <section id="contact">
   <p class="section-tag">// contact</p>
   <h2 class="section-title">Me contacter</h2>
@@ -354,6 +458,142 @@
 <footer>
   &lt;built with 💚 by mg /&gt; · Mohamed Gontara © 2026
 </footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script>
+(() => {
+  const heroEl = document.getElementById('about');
+  const canvas = document.getElementById('hero-canvas');
+
+  // ── RENDERER ──────────────────────────────────────────
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 0);
+
+  const scene  = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(52, 1, 0.1, 100);
+  camera.position.set(0, 0.4, 3.6);
+
+  function resize() {
+    const w = heroEl.offsetWidth;
+    const h = heroEl.offsetHeight;
+    renderer.setSize(w, h);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // ── MESH GEOMETRY ─────────────────────────────────────
+  // Dense plane — same concept as Syncrely's deformed surface
+  const SEGS = 100;
+  const geo  = new THREE.PlaneGeometry(8, 5.5, SEGS, SEGS);
+
+  // Snapshot original XY positions for wave math
+  const posAttr = geo.attributes.position;
+  const baseX   = new Float32Array(posAttr.count);
+  const baseY   = new Float32Array(posAttr.count);
+  for (let i = 0; i < posAttr.count; i++) {
+    baseX[i] = posAttr.getX(i);
+    baseY[i] = posAttr.getY(i);
+  }
+
+  // Wireframe — thin accent-colored lines, very subtle opacity
+  const mat = new THREE.MeshBasicMaterial({
+    color: 0x00d4aa,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.11,
+  });
+
+  const mesh = new THREE.Mesh(geo, mat);
+  // Tilt like Syncrely: angled so bottom recedes, top rises
+  mesh.rotation.x = -Math.PI * 0.30;
+  mesh.rotation.z =  Math.PI * 0.02;
+  mesh.position.y = -0.5;
+  scene.add(mesh);
+
+  // ── MOUSE ─────────────────────────────────────────────
+  let rawX = 0, rawY = 0;   // normalised -1..1
+  let smX  = 0, smY  = 0;   // smoothed
+
+  heroEl.addEventListener('mousemove', e => {
+    const r = heroEl.getBoundingClientRect();
+    rawX =  ((e.clientX - r.left)  / r.width  - 0.5) * 2;
+    rawY = -((e.clientY - r.top)   / r.height - 0.5) * 2;
+  });
+  heroEl.addEventListener('mouseleave', () => { rawX = 0; rawY = 0; });
+
+  // ── ANIMATION LOOP ────────────────────────────────────
+  let t = 0;
+
+  (function tick() {
+    requestAnimationFrame(tick);
+    t += 0.007;
+
+    // Smooth mouse interpolation
+    smX += (rawX - smX) * 0.035;
+    smY += (rawY - smY) * 0.035;
+
+    // Deform vertices: ambient waves + mouse ripple
+    for (let i = 0; i < posAttr.count; i++) {
+      const x = baseX[i];
+      const y = baseY[i];
+
+      // Ambient undulation — three overlapping sine waves
+      const a = Math.sin(x * 0.9  + t * 1.0 ) * 0.10;
+      const b = Math.sin(y * 1.2  + t * 0.75) * 0.08;
+      const c = Math.sin((x - y) * 0.7 + t * 1.3) * 0.05;
+
+      // Mouse ripple — propagates outward from cursor position
+      const mx = x - smX * 2.8;
+      const my = y - smY * 1.6;
+      const d  = Math.sqrt(mx * mx + my * my);
+      const ripple = Math.sin(d * 1.8 - t * 4.5) * Math.max(0, 1 - d / 4.0) * 0.20;
+
+      posAttr.setZ(i, a + b + c + ripple);
+    }
+    posAttr.needsUpdate = true;
+
+    // Subtle camera tilt following mouse — exactly like Syncrely
+    camera.position.x += (smX * 0.15 - camera.position.x) * 0.025;
+    camera.position.y += (smY * 0.08 + 0.4 - camera.position.y) * 0.025;
+    camera.lookAt(0, -0.2, 0);
+
+    renderer.render(scene, camera);
+  })();
+})();
+
+// ── FLOATING CARDS PARALLAX ──────────────────────────
+(() => {
+  const layers = [
+    { el: document.getElementById('flayer1'), depth: 0.010 },
+    { el: document.getElementById('flayer2'), depth: 0.022 },
+    { el: document.getElementById('flayer3'), depth: 0.034 },
+  ];
+  if (!layers[0].el) return;
+
+  let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+  const pos = layers.map(() => ({ x: 0, y: 0 }));
+
+  window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  (function tick() {
+    requestAnimationFrame(tick);
+    if (window.innerWidth < 1100) return;
+    const offX = mx - window.innerWidth  / 2;
+    const offY = my - window.innerHeight / 2;
+    layers.forEach(({ el, depth }, i) => {
+      pos[i].x = lerp(pos[i].x, offX * depth, 0.05 + depth * 0.6);
+      pos[i].y = lerp(pos[i].y, offY * depth, 0.05 + depth * 0.6);
+      el.style.transform = `translate(${pos[i].x}px, ${pos[i].y}px)`;
+    });
+  })();
+})();
+</script>
 
 </body>
 </html>
